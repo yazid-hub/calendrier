@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+      }
+      .day {
+        border: 1px solid black;
+        text-align: center;
+      }
+      .task {
+        background-color: lightblue;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: move;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar">
+      <div class="day">Lundi</div>
+      <div class="day">Mardi</div>
+      <div class="day">Mercredi</div>
+      <div class="day">Jeudi</div>
+      <div class="day">Vendredi</div>
+      <div class="day">Samedi</div>
+      <div class="day">Dimanche</div>
+      <!-- Autres jours -->
+    </div>
+    <div id="tasksContainer">
+      <div class="task">Tâche 1</div>
+      <div class="task">Tâche 2</div>
+      <!-- Autres tâches -->
+    </div>
+  </body>
+  <script>
+    let isDragging = false;
+    let currentTask;
+    let currentTaskX;
+    let currentTaskY;
+    let tasksContainer = document.querySelector("#tasksContainer");
+    let calendar = document.querySelector(".calendar");
+
+    tasksContainer.addEventListener("mousedown", function (event) {
+      if (event.target.classList.contains("task")) {
+        isDragging = true;
+        currentTask = event.target;
+        currentTaskX = event.clientX - currentTask.offsetLeft;
+        currentTaskY = event.clientY - currentTask.offsetTop;
+      }
+    });
+
+    tasksContainer.addEventListener("mouseup", function (event) {
+      if (event.target.classList.contains("day")) {
+        isDragging = false;
+        let dayIndex = Array.from(calendar.children).indexOf(event.target);
+        let dayOfWeek = dayIndex % 7;
+        let weekOfMonth = Math.floor(dayIndex / 7);
+        currentTask.style.top = weekOfMonth * 100 + "px";
+        currentTask.style.left = dayOfWeek * 100 + "px";
+        event.target.appendChild(currentTask);
+      }
+    });
+
+    tasksContainer.addEventListener("mousemove", function (event) {
+      if (isDragging) {
+        currentTask.style.left = event.clientX - currentTaskX + "px";
+        currentTask.style.top = event.clientY - currentTaskY + "px";
+      }
+    });
+  </script>
+</html>
